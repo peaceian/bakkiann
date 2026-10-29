@@ -1,0 +1,1314 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="太陽眼鏡品牌訂單處理標準作業流程：從客人下單、庫存確認、收款、品檢、包裝、出貨到售後。">
+  <title>太陽眼鏡品牌｜訂單處理標準作業流程（SOP）</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy-950: #0c1f33;
+      --navy-900: #122b46;
+      --navy-800: #1b3c60;
+      --blue-700: #2f5f96;
+      --blue-600: #4779ad;
+      --blue-100: #dce9f4;
+      --blue-050: #eef5fa;
+      --gold-500: #c69a55;
+      --gold-100: #f5ead8;
+      --ink: #172333;
+      --muted: #617084;
+      --line: #d8e0e8;
+      --surface: #ffffff;
+      --canvas: #f4f7fa;
+      --success: #28745a;
+      --success-soft: #e5f4ed;
+      --shadow: 0 18px 50px rgba(16, 43, 70, 0.09);
+      --radius-lg: 22px;
+      --radius-md: 14px;
+      --radius-sm: 9px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 90% 0%, rgba(71, 121, 173, 0.10), transparent 32rem),
+        var(--canvas);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.72;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+    a { color: inherit; }
+
+    .top-progress {
+      position: fixed;
+      z-index: 100;
+      inset: 0 0 auto;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .top-progress > span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-500), var(--blue-600));
+      transition: width 180ms ease;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      background: linear-gradient(135deg, var(--navy-950), var(--navy-800));
+      padding: 78px 24px 64px;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero::before {
+      width: 450px;
+      height: 450px;
+      right: -190px;
+      top: -270px;
+    }
+
+    .hero::after {
+      width: 260px;
+      height: 260px;
+      right: 74px;
+      top: -168px;
+    }
+
+    .hero-inner {
+      width: min(1160px, 100%);
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 16px;
+      color: #c8d9e9;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.17em;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 30px;
+      height: 2px;
+      background: var(--gold-500);
+    }
+
+    .hero h1 {
+      max-width: 850px;
+      margin: 0;
+      font-size: clamp(2.15rem, 5.2vw, 4.2rem);
+      line-height: 1.13;
+      letter-spacing: -0.035em;
+    }
+
+    .hero h1 span {
+      display: block;
+      margin-top: 10px;
+      color: #bed2e4;
+      font-size: 0.42em;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-summary {
+      max-width: 760px;
+      margin: 24px 0 0;
+      color: #d9e4ee;
+      font-size: 1.04rem;
+    }
+
+    .meta-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 6px 13px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #edf4f9;
+      font-size: 0.86rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .meta-chip strong { color: #fff; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 34px;
+      width: min(1160px, calc(100% - 40px));
+      margin: 36px auto 80px;
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 12px 34px rgba(16, 43, 70, 0.07);
+      overflow: hidden;
+    }
+
+    .sidebar-head {
+      padding: 19px 20px 15px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .sidebar-head strong {
+      display: block;
+      font-size: 0.96rem;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 11px;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .progress-track {
+      height: 7px;
+      margin-top: 6px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #e9eef3;
+    }
+
+    .progress-track span {
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--gold-500), var(--success));
+      transition: width 180ms ease;
+    }
+
+    .toc {
+      max-height: min(59vh, 610px);
+      padding: 10px;
+      overflow: auto;
+    }
+
+    .toc a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      color: #43546a;
+      font-size: 0.82rem;
+      line-height: 1.35;
+      text-decoration: none;
+      transition: 140ms ease;
+    }
+
+    .toc a:hover,
+    .toc a:focus-visible {
+      color: var(--navy-900);
+      background: var(--blue-050);
+      outline: none;
+    }
+
+    .toc .num {
+      flex: 0 0 25px;
+      color: var(--blue-600);
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .sidebar-actions {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid var(--line);
+      background: #fbfcfd;
+    }
+
+    .action-btn,
+    .copy-btn,
+    .menu-btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      cursor: pointer;
+      transition: 140ms ease;
+    }
+
+    .action-btn {
+      padding: 9px 12px;
+      color: #43546a;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .action-btn:hover,
+    .action-btn:focus-visible,
+    .copy-btn:hover,
+    .copy-btn:focus-visible {
+      border-color: var(--blue-600);
+      color: var(--blue-700);
+      outline: none;
+    }
+
+    .main { min-width: 0; }
+
+    .goal {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 17px;
+      margin-bottom: 22px;
+      padding: 23px 25px;
+      border: 1px solid #d8c29d;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, #fffdf9, var(--gold-100));
+      box-shadow: var(--shadow);
+    }
+
+    .goal-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--navy-900);
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .goal strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--navy-900);
+    }
+
+    .goal p { margin: 0; }
+
+    .card {
+      scroll-margin-top: 18px;
+      margin-bottom: 22px;
+      padding: clamp(22px, 4vw, 38px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .section-kicker {
+      margin: 0 0 6px;
+      color: var(--blue-600);
+      font-size: 0.74rem;
+      font-weight: 850;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h2.section-title {
+      margin: 0 0 22px;
+      color: var(--navy-900);
+      font-size: clamp(1.48rem, 3vw, 2rem);
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+    }
+
+    .plain-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .plain-list li {
+      position: relative;
+      padding-left: 23px;
+    }
+
+    .plain-list li::before {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: 0.75em;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gold-500);
+      box-shadow: 0 0 0 4px var(--gold-100);
+    }
+
+    .table-wrap {
+      max-width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      color: var(--navy-900);
+      background: var(--blue-100);
+      font-size: 0.82rem;
+      font-weight: 850;
+      letter-spacing: 0.02em;
+    }
+
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:nth-child(even) { background: #fbfcfd; }
+
+    .step-cell {
+      width: 74px;
+      color: var(--blue-700);
+      font-weight: 850;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .status-cell {
+      width: 125px;
+      color: var(--navy-900);
+      font-weight: 800;
+    }
+
+    .procedures {
+      display: grid;
+      gap: 16px;
+    }
+
+    .procedure {
+      scroll-margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .procedure-header {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(90deg, var(--blue-050), #fff);
+    }
+
+    .procedure-number {
+      display: grid;
+      flex: 0 0 42px;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--blue-700);
+      font-size: 0.8rem;
+      font-weight: 900;
+    }
+
+    .procedure h3 {
+      margin: 0;
+      color: var(--navy-900);
+      font-size: 1.08rem;
+      line-height: 1.35;
+    }
+
+    .procedure-body { padding: 18px 20px 21px; }
+
+    .checklist {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .check-item {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      cursor: pointer;
+    }
+
+    .check-item input {
+      appearance: none;
+      display: grid;
+      place-content: center;
+      width: 19px;
+      height: 19px;
+      margin: 4px 0 0;
+      border: 1.5px solid #96a7b9;
+      border-radius: 5px;
+      background: #fff;
+      cursor: pointer;
+      transition: 120ms ease;
+    }
+
+    .check-item input::before {
+      content: "";
+      width: 9px;
+      height: 5px;
+      border: solid #fff;
+      border-width: 0 0 2px 2px;
+      transform: rotate(-45deg) scale(0);
+      transition: 120ms ease;
+    }
+
+    .check-item input:checked {
+      border-color: var(--success);
+      background: var(--success);
+    }
+
+    .check-item input:checked::before { transform: rotate(-45deg) scale(1); }
+    .check-item input:focus-visible { outline: 3px solid rgba(71, 121, 173, 0.23); outline-offset: 2px; }
+    .check-item input:checked + span { color: #738092; text-decoration: line-through; text-decoration-thickness: 1px; }
+
+    .procedure .table-wrap { margin-top: 18px; }
+
+    .formula {
+      margin: 14px 0 0;
+      padding: 13px 16px;
+      border-left: 4px solid var(--gold-500);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      background: var(--gold-100);
+      color: var(--navy-900);
+      font-weight: 800;
+    }
+
+    .final-checks {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 20px;
+    }
+
+    .message-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .message-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 190px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: linear-gradient(145deg, #fff, var(--blue-050));
+    }
+
+    .message-card h3 {
+      margin: 0 0 9px;
+      color: var(--navy-900);
+      font-size: 1rem;
+    }
+
+    .message-text {
+      flex: 1;
+      margin: 0;
+      color: #43546a;
+      font-size: 0.9rem;
+    }
+
+    .copy-btn {
+      align-self: flex-start;
+      margin-top: 15px;
+      padding: 7px 11px;
+      color: var(--blue-700);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .closing-note {
+      margin: 24px 0 0;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      text-align: center;
+      font-style: italic;
+    }
+
+    .mobile-toolbar { display: none; }
+
+    .footer {
+      padding: 0 24px 52px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    .toast {
+      position: fixed;
+      z-index: 120;
+      right: 20px;
+      bottom: 20px;
+      max-width: calc(100vw - 40px);
+      padding: 11px 15px;
+      border-radius: 10px;
+      color: #fff;
+      background: var(--navy-900);
+      box-shadow: 0 12px 30px rgba(12, 31, 51, 0.24);
+      font-size: 0.86rem;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: 180ms ease;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; width: min(760px, calc(100% - 28px)); margin-top: 20px; }
+      .sidebar { display: none; position: fixed; z-index: 90; inset: 64px 14px auto; max-height: calc(100vh - 82px); }
+      .sidebar.open { display: block; }
+      .toc { max-height: calc(100vh - 250px); }
+      .mobile-toolbar {
+        position: sticky;
+        z-index: 80;
+        top: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.94);
+        backdrop-filter: blur(12px);
+      }
+      .mobile-toolbar strong { color: var(--navy-900); font-size: 0.86rem; }
+      .menu-btn { padding: 7px 11px; color: var(--blue-700); font-size: 0.78rem; font-weight: 800; }
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 58px 20px 45px; }
+      .hero-summary { font-size: 0.94rem; }
+      .layout { width: min(100% - 20px, 760px); margin-bottom: 50px; }
+      .card { padding: 21px 17px; border-radius: 17px; }
+      .goal { grid-template-columns: 1fr; padding: 20px; border-radius: 17px; }
+      .procedure-header, .procedure-body { padding-left: 15px; padding-right: 15px; }
+      .final-checks, .message-grid { grid-template-columns: 1fr; }
+      .message-card { min-height: auto; }
+      table { min-width: 590px; font-size: 0.86rem; }
+      .compact-table table { min-width: 0; }
+      th, td { padding: 10px 11px; }
+    }
+
+    @media print {
+      @page { size: A4; margin: 14mm 13mm 16mm; }
+      body { background: #fff; color: #111; font-size: 10pt; }
+      .top-progress, .mobile-toolbar, .sidebar, .copy-btn, .toast { display: none !important; }
+      .hero { padding: 18mm 12mm 12mm; background: var(--navy-900) !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .hero h1 { font-size: 27pt; }
+      .hero-summary { font-size: 10pt; }
+      .layout { display: block; width: 100%; margin: 8mm auto 0; }
+      .goal, .card { box-shadow: none; break-inside: auto; }
+      .card { margin-bottom: 7mm; padding: 7mm; border-radius: 4mm; }
+      .procedure, .message-card, .goal, .table-wrap { break-inside: avoid; }
+      .procedure { margin-bottom: 4mm; }
+      .procedure-header { padding: 4mm 5mm; }
+      .procedure-body { padding: 4mm 5mm 5mm; }
+      .check-item input { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .message-grid { grid-template-columns: 1fr 1fr; }
+      .footer { padding: 0; }
+      a { text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-progress" aria-hidden="true"><span id="scrollProgress"></span></div>
+
+  <div class="mobile-toolbar">
+    <strong>訂單處理 SOP</strong>
+    <button class="menu-btn" id="menuButton" type="button" aria-expanded="false" aria-controls="sidebar">章節選單</button>
+  </div>
+
+  <header class="hero" id="top">
+    <div class="hero-inner">
+      <p class="eyebrow">ORDER OPERATIONS · SOP</p>
+      <h1>太陽眼鏡品牌<span>訂單處理標準作業流程</span></h1>
+      <p class="hero-summary">完整版｜從客人下單、庫存確認、收款、品檢、包裝、出貨到售後</p>
+      <div class="meta-list" aria-label="文件資訊">
+        <span class="meta-chip"><strong>版本</strong> V1.1</span>
+        <span class="meta-chip"><strong>適用階段</strong> 品牌起步／小量接單</span>
+        <span class="meta-chip"><strong>接單管道</strong> IG・LINE・表單</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar" aria-label="章節導覽">
+      <div class="sidebar-head">
+        <strong>章節導覽</strong>
+        <div class="progress-label"><span>勾選進度</span><span id="progressText">0 / 0</span></div>
+        <div class="progress-track" aria-hidden="true"><span id="checkProgress"></span></div>
+      </div>
+      <nav class="toc">
+        <a href="#purpose"><span class="num">01</span><span>SOP 使用目的</span></a>
+        <a href="#workflow"><span class="num">02</span><span>訂單總流程</span></a>
+        <a href="#status"><span class="num">03</span><span>訂單狀態定義</span></a>
+        <a href="#details"><span class="num">04</span><span>詳細作業流程</span></a>
+        <a href="#final-check"><span class="num">05</span><span>出貨前最終複核</span></a>
+        <a href="#fields"><span class="num">06</span><span>訂單紀錄完整欄位</span></a>
+        <a href="#exceptions"><span class="num">07</span><span>常見異常與處理</span></a>
+        <a href="#messages"><span class="num">08</span><span>客戶訊息範本</span></a>
+        <a href="#rules"><span class="num">09</span><span>起步執行規則</span></a>
+        <a href="#tools"><span class="num">10</span><span>最小可行工具</span></a>
+        <a href="#rehearsal"><span class="num">11</span><span>正式接單前演練</span></a>
+      </nav>
+      <div class="sidebar-actions">
+        <button class="action-btn" id="printButton" type="button">列印／另存 PDF</button>
+        <button class="action-btn" id="exportTextButton" type="button">產生文字文件（TXT）</button>
+        <button class="action-btn" id="resetButton" type="button">重設所有勾選</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="goal" aria-labelledby="goal-title">
+        <div class="goal-icon" aria-hidden="true">✓</div>
+        <div>
+          <strong id="goal-title">目標：</strong>
+          <p>每一筆訂單都有明確狀態、責任與紀錄，確保不漏單、不超賣、不漏收款、不寄錯商品，並能追蹤客戶來源與售後問題。</p>
+        </div>
+      </section>
+
+      <section class="card" id="purpose">
+        <p class="section-kicker">Section 01</p>
+        <h2 class="section-title">1. SOP 使用目的</h2>
+        <ul class="plain-list">
+          <li>建立固定且可重複的接單流程，避免因 IG／LINE 私訊分散造成漏單。</li>
+          <li>在正式收款前先確認庫存，降低超賣、缺貨與客訴。</li>
+          <li>讓付款、品檢、包裝、物流、退換貨皆可被追蹤。</li>
+          <li>保留客戶來源、折扣碼、KOC／網紅資訊，後續可分析真正有效的導流來源。</li>
+          <li>在起步階段使用簡單工具即可執行，待訂單量成長後再升級電商、金流與物流 API。</li>
+        </ul>
+      </section>
+
+      <section class="card" id="workflow">
+        <p class="section-kicker">Section 02</p>
+        <h2 class="section-title">2. 訂單總流程</h2>
+        <div class="table-wrap compact-table">
+          <table>
+            <thead><tr><th>步驟</th><th>作業</th></tr></thead>
+            <tbody>
+              <tr><td class="step-cell">01</td><td>客人下單／詢問</td></tr>
+              <tr><td class="step-cell">02</td><td>確認訂單資訊</td></tr>
+              <tr><td class="step-cell">03</td><td>確認可售庫存並保留</td></tr>
+              <tr><td class="step-cell">04</td><td>計算應付金額</td></tr>
+              <tr><td class="step-cell">05</td><td>提供付款資訊</td></tr>
+              <tr><td class="step-cell">06</td><td>確認實際入帳</td></tr>
+              <tr><td class="step-cell">07</td><td>建立／更新訂單紀錄</td></tr>
+              <tr><td class="step-cell">08</td><td>出貨前品檢</td></tr>
+              <tr><td class="step-cell">09</td><td>包裝與複核</td></tr>
+              <tr><td class="step-cell">10</td><td>建立物流寄件資料</td></tr>
+              <tr><td class="step-cell">11</td><td>完成寄件並回填單號</td></tr>
+              <tr><td class="step-cell">12</td><td>通知客戶</td></tr>
+              <tr><td class="step-cell">13</td><td>追蹤到貨</td></tr>
+              <tr><td class="step-cell">14</td><td>售後／退換貨／UGC</td></tr>
+              <tr><td class="step-cell">15</td><td>訂單完成與月度分析</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" id="status">
+        <p class="section-kicker">Section 03</p>
+        <h2 class="section-title">3. 訂單狀態定義</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>狀態</th><th>定義</th><th>下一步</th></tr></thead>
+            <tbody>
+              <tr><td class="status-cell">新詢問</td><td>客人詢問款式、價格或是否有貨</td><td>取得完整下單資訊</td></tr>
+              <tr><td class="status-cell">新訂單</td><td>客人已確認購買並提供基本資料</td><td>確認庫存</td></tr>
+              <tr><td class="status-cell">待付款</td><td>庫存已保留並已提供付款資訊</td><td>等待並核對入帳</td></tr>
+              <tr><td class="status-cell">已付款</td><td>款項已實際入帳</td><td>排入品檢與出貨</td></tr>
+              <tr><td class="status-cell">待出貨</td><td>品檢／包裝尚未完成</td><td>完成品檢、包裝</td></tr>
+              <tr><td class="status-cell">已出貨</td><td>已交付物流並有追蹤碼</td><td>通知客戶並追蹤到貨</td></tr>
+              <tr><td class="status-cell">已送達</td><td>物流顯示已送達或取件</td><td>進入售後關懷</td></tr>
+              <tr><td class="status-cell">已完成</td><td>無售後問題或已結案</td><td>保留紀錄並納入分析</td></tr>
+              <tr><td class="status-cell">取消</td><td>未付款逾期、客人取消或其他原因</td><td>釋放庫存並記錄原因</td></tr>
+              <tr><td class="status-cell">退換貨處理中</td><td>客人提出退貨、換貨或瑕疵問題</td><td>依退換貨規則處理</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" id="details">
+        <p class="section-kicker">Section 04</p>
+        <h2 class="section-title">4. 詳細作業流程</h2>
+        <div class="procedures">
+          <article class="procedure" id="step-4-1">
+            <div class="procedure-header"><span class="procedure-number">4.1</span><h3>客人下單／詢問</h3></div>
+            <div class="procedure-body">
+              <ul class="checklist">
+                <li><label class="check-item"><input type="checkbox" data-check="4.1-1"><span>確認客人是「詢價／試戴／正式下單」哪一種需求。</span></label></li>
+                <li><label class="check-item"><input type="checkbox" data-check="4.1-2"><span>若為正式下單，取得：姓名、手機、IG／LINE 暱稱、商品款式、顏色、數量、配送方式、收件地址或超商門市。</span></label></li>
+                <li><label class="check-item"><input type="checkbox" data-check="4.1-3"><span>確認客戶來源：品牌 IG、朋友介紹、KOC、網紅、活動、自然搜尋或其他。</span></label></li>
+                <li><label class="check-item"><input type="checkbox" data-check="4.1-4"><span>若有折扣碼、介紹人或合作 KOC，立即記錄，避免成交後無法歸因。</span></label></li>
+                <li><label class="check-item"><input type="checkbox" data-check="4.1-5"><span>若客人一次購買多副，逐項確認款式／顏色／數量，不使用「那副黑色的」等模糊描述。</span></label></li>
+              </ul>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>必收欄位</th><th>內容</th></tr></thead>
+                  <tbody>
+                    <tr><td>客戶資料</td><td>姓名、手機、IG／LINE 名稱</td></tr>
+                    <tr><td>商品資料</td><td>SKU／款式、顏色、數量</td></tr>
+                    <tr><td>配送資料</td><td>超商門市／地址、收件人</td></tr>
+                    <tr><td>行銷來源</td><td>IG、朋友、KOC／網紅、折扣碼</td></tr>
+                    <tr><td>備註</td><td>特殊需求、預計送禮、指定出貨日等</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </article>
+
+          <article class="procedure" id="step-4-2">
+            <div class="procedure-header"><span class="procedure-number">4.2</span><h3>確認訂單資訊</h3></div>
+            <div class="procedure-body"><ul class="checklist">
+              <li><label class="check-item"><input type="checkbox" data-check="4.2-1"><span>將客人訊息轉成正式訂單紀錄，不只保留在聊天室。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.2-2"><span>再次核對款式、顏色、數量、單價、折扣、運費與總金額。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.2-3"><span>若商品圖片與實品可能因螢幕色差不同，必要時先提醒客人。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.2-4"><span>如有預購／補貨商品，必須在付款前告知預計出貨時間。</span></label></li>
+            </ul></div>
+          </article>
+
+          <article class="procedure" id="step-4-3">
+            <div class="procedure-header"><span class="procedure-number">4.3</span><h3>確認庫存</h3></div>
+            <div class="procedure-body">
+              <ul class="checklist">
+                <li><label class="check-item"><input type="checkbox" data-check="4.3-1"><span>查詢「實際可售庫存」，不可只看進貨數量。</span></label></li>
+                <li><label class="check-item"><input type="checkbox" data-check="4.3-2"><span>可售庫存＝現有實體庫存－已付款待出貨－已保留待付款－瑕疵品／樣品。</span></label></li>
+                <li><label class="check-item"><input type="checkbox" data-check="4.3-3"><span>確認有貨後，將該數量標記為「保留中」。</span></label></li>
+                <li><label class="check-item"><input type="checkbox" data-check="4.3-4"><span>建議保留期限 24 小時；逾期未付款則取消保留並通知客人。</span></label></li>
+                <li><label class="check-item"><input type="checkbox" data-check="4.3-5"><span>若缺貨：提供補貨時間、替代款或直接取消，不先收款後才告知缺貨。</span></label></li>
+              </ul>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>庫存欄位</th><th>建議內容</th></tr></thead>
+                  <tbody>
+                    <tr><td>SKU</td><td>每款每色唯一編號</td></tr>
+                    <tr><td>進貨數</td><td>累計進貨</td></tr>
+                    <tr><td>已售未出</td><td>已付款但未寄出</td></tr>
+                    <tr><td>保留中</td><td>待付款客戶</td></tr>
+                    <tr><td>瑕疵／樣品</td><td>不可銷售數量</td></tr>
+                    <tr><td>可售庫存</td><td>實際可再接受訂單數量</td></tr>
+                    <tr><td>安全庫存</td><td>例如剩 2～3 副提醒補貨</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </article>
+
+          <article class="procedure" id="step-4-4">
+            <div class="procedure-header"><span class="procedure-number">4.4</span><h3>計算應付金額</h3></div>
+            <div class="procedure-body"><ul class="checklist">
+              <li><label class="check-item"><input type="checkbox" data-check="4.4-1"><span>計算：商品小計－折扣＋運費＝客戶應付金額。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.4-2"><span>若有滿額免運、KOC 折扣或活動價，需在訂單紀錄中留下原價與折扣額。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.4-3"><span>付款前以文字再次提供「品項＋數量＋總金額＋付款期限」。</span></label></li>
+            </ul><p class="formula">商品小計－折扣＋運費＝客戶應付金額</p></div>
+          </article>
+
+          <article class="procedure" id="step-4-5">
+            <div class="procedure-header"><span class="procedure-number">4.5</span><h3>提供付款資訊</h3></div>
+            <div class="procedure-body"><ul class="checklist">
+              <li><label class="check-item"><input type="checkbox" data-check="4.5-1"><span>起步可使用銀行轉帳或其他可核對交易紀錄的付款方式。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.5-2"><span>付款資訊應使用固定範本，避免帳號或金額打錯。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.5-3"><span>提醒客戶在保留期限內完成付款；需要辨識時可要求提供帳號末五碼或交易資訊。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.5-4"><span>不得只依付款截圖認定付款完成，以實際入帳為準。</span></label></li>
+            </ul></div>
+          </article>
+
+          <article class="procedure" id="step-4-6">
+            <div class="procedure-header"><span class="procedure-number">4.6</span><h3>確認實際入帳／對帳</h3></div>
+            <div class="procedure-body"><ul class="checklist">
+              <li><label class="check-item"><input type="checkbox" data-check="4.6-1"><span>核對實際入帳金額是否與訂單應收一致。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.6-2"><span>核對付款人／末五碼／交易時間，避免對錯訂單。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.6-3"><span>確認入帳後，狀態由「待付款」改為「已付款」。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.6-4"><span>若少付／多付，先與客人確認再出貨。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.6-5"><span>若逾期未付款：發一次提醒；仍未付款則取消訂單並釋放庫存。</span></label></li>
+            </ul></div>
+          </article>
+
+          <article class="procedure" id="step-4-7">
+            <div class="procedure-header"><span class="procedure-number">4.7</span><h3>建立訂單編號與完整紀錄</h3></div>
+            <div class="procedure-body"><ul class="checklist">
+              <li><label class="check-item"><input type="checkbox" data-check="4.7-1"><span>每筆訂單使用唯一訂單編號，例如 YYYYMMDD-001。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.7-2"><span>訂單紀錄至少包含：客戶、商品、金額、付款、來源、物流、狀態、售後。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.7-3"><span>任何狀態改變都更新，不依記憶處理。</span></label></li>
+            </ul></div>
+          </article>
+
+          <article class="procedure" id="step-4-8">
+            <div class="procedure-header"><span class="procedure-number">4.8</span><h3>出貨前品檢</h3></div>
+            <div class="procedure-body"><ul class="checklist">
+              <li><label class="check-item"><input type="checkbox" data-check="4.8-1"><span>鏡片：無明顯刮傷、裂痕、污漬、鍍膜異常。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.8-2"><span>鏡框：無裂痕、掉漆、明顯歪斜。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.8-3"><span>鏡腳：左右開合正常、鬆緊合理、螺絲無明顯鬆動。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.8-4"><span>鼻墊／鼻橋：完整、乾淨、無變形。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.8-5"><span>核對 SKU、款式、顏色、數量與訂單完全一致。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.8-6"><span>建議每副出貨前拍攝一張商品狀態照或短片留存。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.8-7"><span>發現瑕疵不得出貨，改用合格庫存並將瑕疵品移入隔離區。</span></label></li>
+            </ul></div>
+          </article>
+
+          <article class="procedure" id="step-4-9">
+            <div class="procedure-header"><span class="procedure-number">4.9</span><h3>包裝</h3></div>
+            <div class="procedure-body"><ul class="checklist">
+              <li><label class="check-item"><input type="checkbox" data-check="4.9-1"><span>將眼鏡擦拭乾淨後再放入鏡盒／眼鏡袋。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.9-2"><span>確認配件：拭鏡布、品牌卡、保固／注意事項（如有）。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.9-3"><span>使用足夠防撞包材，避免鏡框在運送中受壓。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.9-4"><span>外包裝封口完整，不直接在產品盒上貼物流單。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.9-5"><span>包裝完成後再做一次「訂單編號－商品－收件人」三方複核。</span></label></li>
+            </ul></div>
+          </article>
+
+          <article class="procedure" id="step-4-10">
+            <div class="procedure-header"><span class="procedure-number">4.10</span><h3>建立物流寄件資料</h3></div>
+            <div class="procedure-body"><ul class="checklist">
+              <li><label class="check-item"><input type="checkbox" data-check="4.10-1"><span>依客戶選擇建立超商店到店或宅配寄件資料。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.10-2"><span>核對收件人姓名、手機、門市／地址。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.10-3"><span>記錄運費、寄件方式、物流商。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.10-4"><span>若採固定出貨日，將已付款訂單排入下一個出貨批次。</span></label></li>
+            </ul></div>
+          </article>
+
+          <article class="procedure" id="step-4-11">
+            <div class="procedure-header"><span class="procedure-number">4.11</span><h3>完成寄件與回填物流單號</h3></div>
+            <div class="procedure-body"><ul class="checklist">
+              <li><label class="check-item"><input type="checkbox" data-check="4.11-1"><span>將包裹交付物流後取得寄件／追蹤編號。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.11-2"><span>將物流編號、寄出日期、物流商回填訂單。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.11-3"><span>訂單狀態改為「已出貨」。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.11-4"><span>保留寄件憑證至訂單完成或退換貨期限結束。</span></label></li>
+            </ul></div>
+          </article>
+
+          <article class="procedure" id="step-4-12">
+            <div class="procedure-header"><span class="procedure-number">4.12</span><h3>通知客戶</h3></div>
+            <div class="procedure-body"><ul class="checklist">
+              <li><label class="check-item"><input type="checkbox" data-check="4.12-1"><span>主動提供已寄出通知、物流方式與追蹤編號。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.12-2"><span>若為超商取貨，提醒留意到店通知與取件期限。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.12-3"><span>若物流異常、退件或地址錯誤，立即與客人聯繫。</span></label></li>
+            </ul></div>
+          </article>
+
+          <article class="procedure" id="step-4-13">
+            <div class="procedure-header"><span class="procedure-number">4.13</span><h3>追蹤到貨</h3></div>
+            <div class="procedure-body"><ul class="checklist">
+              <li><label class="check-item"><input type="checkbox" data-check="4.13-1"><span>確認物流狀態是否送達／已取件。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.13-2"><span>若超商逾期未取，記錄為異常訂單並聯繫客人。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.13-3"><span>到貨後將狀態改為「已送達」，進入售後關懷。</span></label></li>
+            </ul></div>
+          </article>
+
+          <article class="procedure" id="step-4-14">
+            <div class="procedure-header"><span class="procedure-number">4.14</span><h3>售後／退換貨</h3></div>
+            <div class="procedure-body"><ul class="checklist">
+              <li><label class="check-item"><input type="checkbox" data-check="4.14-1"><span>收到瑕疵、破損、寄錯款式等問題時，先請客戶提供訂單編號與照片／影片。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.14-2"><span>依品牌公告與適用法規判斷退貨、換貨、補寄或退款方式。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.14-3"><span>記錄問題分類：商品瑕疵、物流損傷、寄錯、尺寸／配戴、客戶改變心意、其他。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.14-4"><span>換貨時要重新執行：庫存確認→品檢→包裝→寄件。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.14-5"><span>退款完成後記錄退款金額、日期與方式。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.14-6"><span>所有客訴與瑕疵應回頭統計，以判斷是否為特定款式或供應商問題。</span></label></li>
+            </ul></div>
+          </article>
+
+          <article class="procedure" id="step-4-15">
+            <div class="procedure-header"><span class="procedure-number">4.15</span><h3>UGC／回購與訂單完成</h3></div>
+            <div class="procedure-body"><ul class="checklist">
+              <li><label class="check-item"><input type="checkbox" data-check="4.15-1"><span>確認客戶無問題後，可邀請分享試戴照、限動標註品牌或評論。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.15-2"><span>若客戶同意使用照片作品牌內容，保留授權紀錄。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.15-3"><span>記錄是否為首次購買、回購或朋友轉介紹。</span></label></li>
+              <li><label class="check-item"><input type="checkbox" data-check="4.15-4"><span>售後結束後狀態改為「已完成」。</span></label></li>
+            </ul></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="card" id="final-check">
+        <p class="section-kicker">Section 05</p>
+        <h2 class="section-title">5. 出貨前最終複核清單</h2>
+        <div class="final-checks checklist">
+          <label class="check-item"><input type="checkbox" data-check="5-1"><span>訂單已確認付款</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-2"><span>訂單編號正確</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-3"><span>款式／SKU 正確</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-4"><span>顏色正確</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-5"><span>數量正確</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-6"><span>鏡片無刮傷</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-7"><span>鏡框無歪斜／掉漆</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-8"><span>鏡腳開合正常</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-9"><span>商品已清潔</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-10"><span>鏡盒／袋完整</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-11"><span>拭鏡布完整</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-12"><span>品牌卡／附件完整</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-13"><span>收件人姓名正確</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-14"><span>手機正確</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-15"><span>門市／地址正確</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-16"><span>包裝防撞完成</span></label>
+          <label class="check-item"><input type="checkbox" data-check="5-17"><span>物流單已建立</span></label>
+        </div>
+      </section>
+
+      <section class="card" id="fields">
+        <p class="section-kicker">Section 06</p>
+        <h2 class="section-title">6. 訂單紀錄完整欄位</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>類別</th><th>欄位</th></tr></thead>
+            <tbody>
+              <tr><td>基本</td><td>訂單編號、下單日期、目前狀態</td></tr>
+              <tr><td>客戶</td><td>姓名、手機、IG／LINE 暱稱</td></tr>
+              <tr><td>商品</td><td>SKU、款式、顏色、數量</td></tr>
+              <tr><td>價格</td><td>原價、小計、折扣、運費、實收金額</td></tr>
+              <tr><td>付款</td><td>付款方式、付款日期、對帳註記</td></tr>
+              <tr><td>庫存</td><td>保留時間、扣庫數量、是否缺貨／預購</td></tr>
+              <tr><td>來源</td><td>IG、朋友、KOC／網紅、折扣碼、介紹人</td></tr>
+              <tr><td>配送</td><td>物流商、配送方式、門市／地址、物流編號、寄出日、到貨日</td></tr>
+              <tr><td>品檢</td><td>品檢完成、品檢人／日期、照片留存</td></tr>
+              <tr><td>售後</td><td>是否退換貨、問題類型、退款／補寄、處理結果</td></tr>
+              <tr><td>行銷</td><td>是否提供 UGC、是否同意品牌使用、是否回購</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" id="exceptions">
+        <p class="section-kicker">Section 07</p>
+        <h2 class="section-title">7. 常見異常與處理原則</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>異常</th><th>處理方式</th></tr></thead>
+            <tbody>
+              <tr><td>客戶未付款</td><td>提醒一次→逾期取消→釋放庫存</td></tr>
+              <tr><td>缺貨</td><td>付款前告知→提供等待／替代／取消選項</td></tr>
+              <tr><td>金額不符</td><td>確認差額後再出貨</td></tr>
+              <tr><td>寄錯商品</td><td>優先處理換貨／補寄並記錄原因</td></tr>
+              <tr><td>商品瑕疵</td><td>蒐集照片→隔離同批庫存→換貨／退款</td></tr>
+              <tr><td>物流退件</td><td>確認原因與二次寄送運費責任</td></tr>
+              <tr><td>超商未取</td><td>聯繫客戶，記錄未取件次數</td></tr>
+              <tr><td>地址錯誤</td><td>尚未寄出立即更正；已寄出依物流規則處理</td></tr>
+              <tr><td>客戶要求取消</td><td>未出貨依規則處理；已出貨依退貨流程</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" id="messages">
+        <p class="section-kicker">Section 08</p>
+        <h2 class="section-title">8. 客戶訊息範本</h2>
+        <div class="message-grid">
+          <article class="message-card"><h3>訂單確認</h3><p class="message-text">您好，已為您確認訂單：＿＿款／＿＿色 × ＿＿，商品小計 NT$＿＿，折扣 NT$＿＿，運費 NT$＿＿，應付總額 NT$＿＿。庫存將為您保留至＿＿，完成付款後即安排出貨。</p><button class="copy-btn" type="button">複製訊息</button></article>
+          <article class="message-card"><h3>付款確認</h3><p class="message-text">您好，款項已確認收到，訂單編號為＿＿。您的訂單已進入出貨準備，預計於＿＿個工作天內寄出；寄出後會再提供物流資訊。</p><button class="copy-btn" type="button">複製訊息</button></article>
+          <article class="message-card"><h3>出貨通知</h3><p class="message-text">您好，您的訂單已於＿＿寄出。物流方式：＿＿；物流編號：＿＿。若為超商取貨請留意到店通知。</p><button class="copy-btn" type="button">複製訊息</button></article>
+          <article class="message-card"><h3>到貨關懷</h3><p class="message-text">您好，想確認眼鏡是否已順利收到、配戴是否合適？若商品有任何問題可以直接與我們聯繫。喜歡的話，也很歡迎標註品牌 IG 分享試戴照。</p><button class="copy-btn" type="button">複製訊息</button></article>
+          <article class="message-card"><h3>未付款提醒</h3><p class="message-text">您好，您的訂單目前仍為保留狀態，保留期限至＿＿。若您仍需要商品，請於期限前完成付款；逾期後庫存將自動釋放。</p><button class="copy-btn" type="button">複製訊息</button></article>
+        </div>
+      </section>
+
+      <section class="card" id="rules">
+        <p class="section-kicker">Section 09</p>
+        <h2 class="section-title">9. 起步階段建議執行規則</h2>
+        <ul class="plain-list">
+          <li>每週固定 2～3 個出貨日，降低每天被零星訂單打斷。</li>
+          <li>訂單一律進入同一份表格管理，不以 IG／LINE 聊天室作為唯一紀錄。</li>
+          <li>待付款訂單一定設定保留期限，避免庫存長期被占用。</li>
+          <li>任何瑕疵品立即與正常庫存分開。</li>
+          <li>每月底統計：銷量、營收、毛利、熱銷款、滯銷款、退換貨率、瑕疵率、KOC／網紅成交數與回購。</li>
+          <li>當人工對帳、填單與通知開始明顯耗時，再升級購物網站、金流與物流串接。</li>
+        </ul>
+      </section>
+
+      <section class="card" id="tools">
+        <p class="section-kicker">Section 10</p>
+        <h2 class="section-title">10. 最小可行工具配置</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>需求</th><th>起步工具</th><th>未來升級</th></tr></thead>
+            <tbody>
+              <tr><td>曝光</td><td>Instagram</td><td>IG＋官網＋廣告追蹤</td></tr>
+              <tr><td>溝通</td><td>LINE／IG 私訊</td><td>LINE OA＋CRM</td></tr>
+              <tr><td>下單</td><td>Google Form／私訊</td><td>購物網站</td></tr>
+              <tr><td>訂單紀錄</td><td>Google Sheets／Excel</td><td>電商後台／ERP</td></tr>
+              <tr><td>收款</td><td>銀行轉帳／可核對金流</td><td>第三方金流／信用卡</td></tr>
+              <tr><td>物流</td><td>超商店到店／宅配</td><td>物流 API／自動出貨</td></tr>
+              <tr><td>庫存</td><td>試算表</td><td>庫存系統／ERP</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" id="rehearsal">
+        <p class="section-kicker">Section 11</p>
+        <h2 class="section-title">11. 正式接單前演練</h2>
+        <ul class="checklist">
+          <li><label class="check-item"><input type="checkbox" data-check="11-1"><span>建立一筆測試訂單，從客人下單完整填到訂單完成。</span></label></li>
+          <li><label class="check-item"><input type="checkbox" data-check="11-2"><span>模擬庫存只剩 1 副時，同時有兩位客人下單的情境。</span></label></li>
+          <li><label class="check-item"><input type="checkbox" data-check="11-3"><span>模擬付款成功與未付款逾期兩種情境。</span></label></li>
+          <li><label class="check-item"><input type="checkbox" data-check="11-4"><span>實際完成一次品檢、包裝、寄件與物流追蹤。</span></label></li>
+          <li><label class="check-item"><input type="checkbox" data-check="11-5"><span>模擬「寄錯款式」與「商品瑕疵」兩種售後情境。</span></label></li>
+          <li><label class="check-item"><input type="checkbox" data-check="11-6"><span>確認每個步驟都有明確紀錄位置，不需要依賴記憶。</span></label></li>
+        </ul>
+        <p class="closing-note">— 建議每 1～2 個月依實際訂單狀況更新本 SOP —</p>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">太陽眼鏡品牌｜訂單處理標準作業流程 V1.1</footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      const storageKey = "sunglasses-order-sop-v1.1";
+      const checkboxes = [...document.querySelectorAll("input[data-check]")];
+      const progressText = document.getElementById("progressText");
+      const checkProgress = document.getElementById("checkProgress");
+      const scrollProgress = document.getElementById("scrollProgress");
+      const sidebar = document.getElementById("sidebar");
+      const menuButton = document.getElementById("menuButton");
+      const toast = document.getElementById("toast");
+      let toastTimer;
+
+      const showToast = (message) => {
+        toast.textContent = message;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 1800);
+      };
+
+      const loadState = () => {
+        try {
+          const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
+          checkboxes.forEach((box) => { box.checked = Boolean(saved[box.dataset.check]); });
+        } catch (_) {
+          localStorage.removeItem(storageKey);
+        }
+      };
+
+      const updateProgress = () => {
+        const completed = checkboxes.filter((box) => box.checked).length;
+        const total = checkboxes.length;
+        const percent = total ? Math.round((completed / total) * 100) : 0;
+        progressText.textContent = `${completed} / ${total}`;
+        checkProgress.style.width = `${percent}%`;
+      };
+
+      const saveState = () => {
+        const state = {};
+        checkboxes.forEach((box) => { state[box.dataset.check] = box.checked; });
+        try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch (_) {}
+        updateProgress();
+      };
+
+      checkboxes.forEach((box) => box.addEventListener("change", saveState));
+      loadState();
+      updateProgress();
+
+      document.getElementById("resetButton").addEventListener("click", () => {
+        if (!window.confirm("要清除這份 SOP 的所有勾選進度嗎？")) return;
+        checkboxes.forEach((box) => { box.checked = false; });
+        try { localStorage.removeItem(storageKey); } catch (_) {}
+        updateProgress();
+        showToast("勾選進度已重設");
+      });
+
+      document.getElementById("printButton").addEventListener("click", () => window.print());
+
+      const cleanText = (value) => value.replace(/\s+/g, " ").trim();
+      const tableLines = (table) => [...table.querySelectorAll("tr")].map((row) =>
+        [...row.querySelectorAll("th, td")]
+          .map((cell) => cleanText(cell.textContent))
+          .filter(Boolean)
+          .join(" ｜ ")
+      ).filter(Boolean);
+
+      const checklistLines = (container) => [...container.querySelectorAll(".check-item")].map((item) => {
+        const checkbox = item.querySelector("input[data-check]");
+        const text = cleanText(item.querySelector("span").textContent);
+        return `${checkbox.checked ? "[完成]" : "[未完成]"} ${text}`;
+      });
+
+      const addSectionHeading = (lines, title) => {
+        lines.push("", "=".repeat(58), title, "=".repeat(58));
+      };
+
+      const addTables = (lines, container) => {
+        container.querySelectorAll("table").forEach((table) => {
+          lines.push(...tableLines(table), "");
+        });
+      };
+
+      const buildTextDocument = () => {
+        const now = new Date();
+        const completed = checkboxes.filter((box) => box.checked).length;
+        const total = checkboxes.length;
+        const lines = [
+          "太陽眼鏡品牌",
+          "訂單處理標準作業流程（SOP）",
+          "完整版｜從客人下單、庫存確認、收款、品檢、包裝、出貨到售後",
+          "版本：V1.1｜適用階段：品牌起步／小量接單／IG・LINE・表單接單",
+          `文件產生時間：${new Intl.DateTimeFormat("zh-TW", { dateStyle: "medium", timeStyle: "short" }).format(now)}`,
+          `勾選完成進度：${completed} / ${total}`,
+          "",
+          "目標：每一筆訂單都有明確狀態、責任與紀錄，確保不漏單、不超賣、不漏收款、不寄錯商品，並能追蹤客戶來源與售後問題。"
+        ];
+
+        const purpose = document.getElementById("purpose");
+        addSectionHeading(lines, "1. SOP 使用目的");
+        purpose.querySelectorAll(".plain-list li").forEach((item) => lines.push(`• ${cleanText(item.textContent)}`));
+
+        const workflow = document.getElementById("workflow");
+        addSectionHeading(lines, "2. 訂單總流程");
+        addTables(lines, workflow);
+
+        const status = document.getElementById("status");
+        addSectionHeading(lines, "3. 訂單狀態定義");
+        addTables(lines, status);
+
+        const details = document.getElementById("details");
+        addSectionHeading(lines, "4. 詳細作業流程");
+        details.querySelectorAll(".procedure").forEach((procedure) => {
+          lines.push("", cleanText(procedure.querySelector("h3").textContent));
+          lines.push(...checklistLines(procedure));
+          addTables(lines, procedure);
+        });
+
+        const finalCheck = document.getElementById("final-check");
+        addSectionHeading(lines, "5. 出貨前最終複核清單");
+        lines.push(...checklistLines(finalCheck));
+
+        const fields = document.getElementById("fields");
+        addSectionHeading(lines, "6. 訂單紀錄完整欄位");
+        addTables(lines, fields);
+
+        const exceptions = document.getElementById("exceptions");
+        addSectionHeading(lines, "7. 常見異常與處理原則");
+        addTables(lines, exceptions);
+
+        const messages = document.getElementById("messages");
+        addSectionHeading(lines, "8. 客戶訊息範本");
+        messages.querySelectorAll(".message-card").forEach((card) => {
+          lines.push("", cleanText(card.querySelector("h3").textContent));
+          lines.push(cleanText(card.querySelector(".message-text").textContent));
+        });
+
+        const rules = document.getElementById("rules");
+        addSectionHeading(lines, "9. 起步階段建議執行規則");
+        rules.querySelectorAll(".plain-list li").forEach((item) => lines.push(`• ${cleanText(item.textContent)}`));
+
+        const tools = document.getElementById("tools");
+        addSectionHeading(lines, "10. 最小可行工具配置");
+        addTables(lines, tools);
+
+        const rehearsal = document.getElementById("rehearsal");
+        addSectionHeading(lines, "11. 正式接單前演練");
+        lines.push(...checklistLines(rehearsal));
+        lines.push("", "— 建議每 1～2 個月依實際訂單狀況更新本 SOP —");
+
+        return { text: lines.join("\r\n"), now };
+      };
+
+      document.getElementById("exportTextButton").addEventListener("click", () => {
+        const { text, now } = buildTextDocument();
+        const date = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, "0"), String(now.getDate()).padStart(2, "0")].join("");
+        const time = [String(now.getHours()).padStart(2, "0"), String(now.getMinutes()).padStart(2, "0")].join("");
+        const blob = new Blob(["\ufeff", text], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `太陽眼鏡品牌_訂單SOP_執行紀錄_${date}_${time}.txt`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        showToast("文字文件已產生");
+      });
+
+      document.querySelectorAll(".copy-btn").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const text = button.closest(".message-card").querySelector(".message-text").textContent.trim();
+          try {
+            await navigator.clipboard.writeText(text);
+            showToast("訊息已複製");
+          } catch (_) {
+            const range = document.createRange();
+            range.selectNodeContents(button.closest(".message-card").querySelector(".message-text"));
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            showToast("已選取文字，請手動複製");
+          }
+        });
+      });
+
+      const toggleMenu = (open) => {
+        sidebar.classList.toggle("open", open);
+        menuButton.setAttribute("aria-expanded", String(open));
+        menuButton.textContent = open ? "關閉選單" : "章節選單";
+      };
+
+      menuButton.addEventListener("click", () => toggleMenu(!sidebar.classList.contains("open")));
+      document.querySelectorAll(".toc a").forEach((link) => link.addEventListener("click", () => {
+        if (window.matchMedia("(max-width: 900px)").matches) toggleMenu(false);
+      }));
+
+      window.addEventListener("resize", () => {
+        if (!window.matchMedia("(max-width: 900px)").matches) toggleMenu(false);
+      });
+
+      const updateScrollProgress = () => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const percent = max > 0 ? Math.min(100, (window.scrollY / max) * 100) : 0;
+        scrollProgress.style.width = `${percent}%`;
+      };
+      window.addEventListener("scroll", updateScrollProgress, { passive: true });
+      updateScrollProgress();
+    })();
+  </script>
+</body>
+</html>
